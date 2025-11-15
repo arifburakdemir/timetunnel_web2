@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. Etap Başlıyor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/TemplateData/style.css">
+    <link rel="stylesheet" href="/static/css/wall.css">
+
+</head>
+
+<body>
+    <!-- Unity Container -->
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas" width="1920" height="1080" tabindex="-1"></canvas>
+        <div id="unity-loading-bar">
+            <div id="unity-logo"></div>
+            <div id="unity-progress-bar-empty">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stage containers removed -->
+    <script>
+
+        // Stage transition - Unity integration
+        window.showStageTransition = function (step) {
+            
+            window.HideLogoContainer();
+            setTimeout(function () {
+                
+                var text = step.toString() + ". ETAP BAŞLIYOR"
+                console.log('[WEB] Stage transition for step ' + step + ' - Unity integration');
+                if (window.unityInstance) {
+                    window.unityInstance.SendMessage('WebGLBridge', 'ShowStageLogo',text);
+                }
+            }, 1 *1000);
+
+        };
+
+         // Stage transition - Unity integration
+        window.showEliminateStage = function (step) {
+            var text = "ELEME TURU BAŞLIYOR"
+            console.log('[WEB] Stage transition for step ' + step + ' - Unity integration');
+            if (window.unityInstance) {
+                window.unityInstance.SendMessage('WebGLBridge', 'ShowStageLogo',text);
+            }
+        };
+
+        // Unity Çark fonksiyonları
+        window.showUnityWheel = function (wheelType, delay) {
+            window.HideStageContainer();
+
+            console.log('[WEB] showUnityWheel : WebGLBridge:ShowWheel:' + wheelType + ':' + delay);
+            
+            setTimeout(function () {
+                window.unityInstance.SendMessage('WebGLBridge', 'ShowWheel', wheelType);
+            }, delay *1000);
+
+        };
+
+        window.HideStageContainer = function () {
+            console.log('[WEB] HideStageContainer - Unity integration');
+            if (window.unityInstance) {
+                window.unityInstance.SendMessage('WebGLBridge', 'HideStageLogo');
+            }
+        }
+
+         window.HideLogoContainer = function () {
+            console.log('[WEB] HideStageContainer - Unity integration');
+            if (window.unityInstance) {
+                window.unityInstance.SendMessage('WebGLBridge', 'HideLogo');
+            }
+        }
+
+        window.hideUnityWheel = function () {
+
+            console.log('[WEB] hideUnityWheel : WebGLBridge:HideWheel:');
+            window.unityInstance.SendMessage('WebGLBridge', 'HideWheel');
+        };
+
+        // Basit soru göster (animasyonsuz)
+        window.showQuestion = function (questionData) {
+            const paramString = JSON.stringify(questionData);
+            window.unityInstance.SendMessage('WebGLBridge', 'ShowQuestion', paramString);
+        };
+
+        // Soruyu gizle (animasyonlu)
+        window.hideQuestion = function () {
+            window.unityInstance.SendMessage('WebGLBridge', 'HideQuestionPanel');
+        };
+
+        // Soru seçeneği seç (reji'den kontrol edilen)
+        window.selectQuestionOption = function (index) {
+            window.unityInstance.SendMessage('WebGLBridge', 'SelectAnswerAt', index + "");
+        };
+
+        // Cevabı göster (reji'den kontrol edilen)
+        window.showQuestionResult = function (resultData) {
+            var param = JSON.stringify(resultData);
+            window.unityInstance.SendMessage('WebGLBridge', 'ShowResult', param);
+        };
+
+        // Soruyu kitle (reji'den kontrol edilen)
+        window.lockAnswerAt = function (lockData) {
+            console.log('[WEB] lockAnswerAt çağrıldı:', lockData);
+            
+            // optionIndex'i al ve string'e çevir (selectQuestionOption pattern'i gibi)
+            const optionIndex = lockData && lockData.optionIndex !== undefined ? lockData.optionIndex : 0;
+            const indexValue = optionIndex.toString();
+            
+            // Unity'ye kilitleme komutunu gönder (seçilen şıkkın index'i ile)
+            if (window.unityInstance) {
+                window.unityInstance.SendMessage('WebGLBridge', 'LockAnswersAt', indexValue);
+                console.log('[WEB] Unity LockAnswersAt komutu gönderildi - optionIndex:', indexValue);
+            } else {
+                console.error('[WEB] Unity instance bulunamadı!');
+            }
+            
+            // HTML elementlerini kitle
+            const optionItems = document.querySelectorAll('.option-item, .stage2-option-box, .stage3-option-box');
+            optionItems.forEach(item => {
+                item.style.pointerEvents = 'none';
+                item.style.opacity = '0.6';
+            });
+            
+            const optionLetter = String.fromCharCode(65 + optionIndex);
+            console.log(`[WEB] ${optionLetter} şıkkı kilitlendi - Unity ve HTML elementleri güncellendi`);
+        };
+
+        // YENİ PUAN DURUMU GÖSTERİMİ
+        window.showScoreboard = function (contestants, stage = 1) {
+
+            console.log("[WEB] Wall:ShowScoreBoard")
+            // Yarışmacıları sırala: elenmeyenler önce, sonra puana göre
+            const sorted = contestants.sort((a, b) => {
+                if (a.eliminated !== b.eliminated) {
+                    return a.eliminated ? 1 : -1;
+                }
+                else {
+                    return b.score - a.score;
+                }
+            });
+
+            // Unity için JSON formatını hazırla (sadece elenmeyen oyuncular)
+            const playersData = sorted
+                .filter(contestant => !contestant.eliminated)
+                .map(contestant => ({
+                    playerName: contestant.name,
+                    playerScore: contestant.score,
+                    playerIcon: contestant.photo || ""
+                }));
+
+            const unityData = {
+                playersData: playersData
+            };
+
+            const jsonData = JSON.stringify(unityData);
+            window.unityInstance.SendMessage('WebGLBridge', 'ShowPlayerPanel', jsonData);
+        };
+
+        // Puan durumu gizle
+        window.hideScoreboard = function () {
+
+            window.unityInstance.SendMessage('WebGLBridge', 'HidePlayerPanel');
+        };
+
+        // Şıkları karart (süre dolduğunda)
+        window.darkenOptions = function () {
+            const optionItems = document.querySelectorAll('.option-item');
+            optionItems.forEach(item => {
+                item.style.filter = 'brightness(0.3)';
+                item.style.pointerEvents = 'none';
+            });
+            console.log('[WEB] Şıklar karartıldı - seçim yapılamaz');
+        };
+
+        // Şıkları normal haline getir
+        window.resetOptions = function () {
+            const optionItems = document.querySelectorAll('.option-item');
+            optionItems.forEach(item => {
+                item.style.filter = '';
+                item.style.pointerEvents = '';
+            });
+            console.log('[WEB] Şıklar normal haline getirildi');
+        };
+        // Çarkı çevir fonksiyonu
+        window.spinUnityWheel = function (result, stage) {
+            console.log('[WEB] ___ Unity çarkı çeviriliyor...', result, stage);
+            if (!window.unityInstance) {
+                console.error('[WEB] Unity henüz yüklenmedi!');
+                return;
+            }
+            try {
+                var day = 0;
+                var month = 0;
+                var year = 0;
+
+                if (stage == 1) {
+                    const [dayStr, monthStr, yearStr] = result.split('-');
+                    day = parseInt(dayStr, 10);
+                    month = parseInt(monthStr, 10);
+                    year = yearStr.split('').map(digit => parseInt(digit, 10));
+                }
+                else if (stage == 2) {
+                    const [dayStr, monthStr] = result.split('-');
+                    day = parseInt(dayStr, 10);
+                    month = parseInt(monthStr, 10);
+                    console.log('[WEB] 2. Etap çarkı çeviriliyor...', day, month);
+                }
+                else if (stage == 3) {
+                    yearStr = result;
+                    year = yearStr.split('').map(digit => parseInt(digit, 10));
+                }
+
+                const params = {
+                    day: day,
+                    dayDur: 3,
+                    dayEase: 6,
+
+                    month: month,
+                    monthDur: 1,
+                    monthEase: 6,
+
+                    year: year,
+                    yearDur: 1,
+                    yearEase: 12
+                };
+                const paramString = JSON.stringify(params);
+                //RotateWheelStage1,RotateWheelStage2,RotateWheelStage3 çalıştırsın. stage
+                window.unityInstance.SendMessage('WebGLBridge', 'RotateWheelStage' + stage, paramString);
+                console.log('[WEB] Wheel.Spin() gönderildi _ Stage' + stage);
+            } catch (e1) {
+                console.error('[WEB] Unity çarkı çevirme hatası:', e1);
+            }
+        };
+
+        // Elimination highlight animasyonu
+        window.animateElimination = function () {
+            
+            window.unityInstance.SendMessage('WebGLBridge', 'EliminatePlayer');
+
+        };
+
+        // 2. ETAP FONKSİYONLARI
+
+        // 2. Etap sorusunu göster
+        window.showStage2Question = function (questionData) {
+
+            const paramString = JSON.stringify(questionData);
+            window.unityInstance.SendMessage('WebGLBridge', 'ShowRightWrong', paramString);
+        };
+
+        // 2. Etap sorusunu gizle
+        window.hideStage2Question = function () {
+            window.unityInstance.SendMessage('WebGLBridge', 'HideRightWrongPanel');
+        };
+
+        // 2. Etap şık durumunu değiştir (D/Y)
+        window.setStage2OptionState = function (data) {
+
+            const paramString = JSON.stringify(data);
+            window.unityInstance.SendMessage('WebGLBridge', 'SetRightWrongAnswerAt', paramString);
+        };
+
+        // 2. Etap sonuç gösterme
+        window.showStage2Result = function (resultsData) {
+
+            resultsData.forEach((element, index) => {
+                setTimeout(() => {
+                    const paramString = JSON.stringify(element);
+                    window.unityInstance.SendMessage('WebGLBridge', 'ShowRightWrongResultAt', paramString);
+                }, index * 1500);
+            });
+        };
+
+        // 2. ETAP TIMER FONKSİYONLARI
+
+        // 2. Etap timer global değişkeni
+        window.stage2TimerState = {
+            timeRemaining: 30,
+            timerInterval: null,
+            isRunning: false
+        };
+
+        // 2. Etap timer başlat
+        window.startStage2Timer = function () {
+            console.log('[WEB] 2. Etap timer başlatılıyor');
+
+            // Önceki timer'ı temizle
+            if (window.stage2TimerState.timerInterval) {
+                clearInterval(window.stage2TimerState.timerInterval);
+            }
+
+            // Timer'ı sıfırla
+            window.stage2TimerState.timeRemaining = 30;
+            window.stage2TimerState.isRunning = true;
+
+            const timerElement = document.getElementById('stage2Timer');
+            const timerNumberElement = document.getElementById('stage2TimerNumber');
+
+            if (!timerElement || !timerNumberElement) {
+                console.error('[WEB] 2. Etap timer elementleri bulunamadı');
+                return;
+            }
+
+            // Başlangıç değerini göster
+            timerNumberElement.textContent = window.stage2TimerState.timeRemaining;
+            timerElement.classList.remove('warning');
+
+            // Timer interval'ını başlat
+            window.stage2TimerState.timerInterval = setInterval(() => {
+                if (!window.stage2TimerState.isRunning) {
+                    clearInterval(window.stage2TimerState.timerInterval);
+                    return;
+                }
+
+                window.stage2TimerState.timeRemaining--;
+                timerNumberElement.textContent = window.stage2TimerState.timeRemaining;
+
+                console.log('[WEB] 2. Etap timer tick:', window.stage2TimerState.timeRemaining);
+
+                // Warning state - son 10 saniye
+                if (window.stage2TimerState.timeRemaining <= 10) {
+                    timerElement.classList.add('warning');
+                } else {
+                    timerElement.classList.remove('warning');
+                }
+
+                // Süre doldu
+                if (window.stage2TimerState.timeRemaining <= 0) {
+                    clearInterval(window.stage2TimerState.timerInterval);
+                    window.stage2TimerState.isRunning = false;
+                    console.log('[WEB] 2. Etap timer süresi doldu');
+                    window.stage2TimeUp();
+                }
+            }, 1000);
+
+            console.log('[WEB] 2. Etap timer başlatıldı');
+        };
+
+        // 2. Etap timer durdur
+        window.stopStage2Timer = function () {
+            console.log('[WEB] 2. Etap timer durduruluyor');
+            window.stage2TimerState.isRunning = false;
+            if (window.stage2TimerState.timerInterval) {
+                clearInterval(window.stage2TimerState.timerInterval);
+                window.stage2TimerState.timerInterval = null;
+            }
+        };
+
+        // 2. Etap süre doldu
+        window.stage2TimeUp = function () {
+            console.log('[WEB] 2. Etap süresi doldu');
+            window.stopStage2Timer();
+
+            // Reji'ye süre doldu mesajı gönder
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({
+                    action: 'stage2TimeUp'
+                }, '*');
+            }
+        };
+
+        // 3. ETAP FONKSİYONLARI
+
+        // Stage 3 transition - Unity integration
+        window.showStage3Transition = function () {
+            console.log('[WEB] Stage3 transition - Unity integration');
+            if (window.unityInstance) {
+                window.unityInstance.SendMessage('WebGLBridge', 'ShowStageLogo', '3');
+            }
+        };
+
+        // 3. Etap için global değişkenler
+        window.stage3GameState = {
+            finalists: [],
+            currentPlayerIndex: 0,
+            timers: [30, 30],
+            timerInterval: null,
+            questionAnswered: false
+        };
+
+        window.updateStage3UpdatePlayerScore = function (data) 
+        {
+            const playersData = data.contestants
+                .filter(contestant => !contestant.eliminated)
+                .map(contestant => ({
+                    playerName: contestant.name,
+                    playerScore: contestant.score,
+                    playerIcon: contestant.photo || "",
+                    countDown: -1
+                }));
+
+            const contestandData = {
+                playersData: playersData
+            };
+
+            const contestantString = JSON.stringify(contestandData);
+            window.unityInstance.SendMessage('WebGLBridge', 'SetPlayersScoreOnSelectTrue', contestantString);
+            
+        };
+
+        // 3. Etap sorusunu göster
+        window.showStage3Question = function (data) {
+            
+            const playersData = data.contestants
+                .filter(contestant => !contestant.eliminated)
+                .map(contestant => ({
+                    playerName: contestant.name,
+                    playerScore: contestant.score,
+                    playerIcon: contestant.photo || "",
+                    countDown: 5
+                }));
+
+            const contestandData = {
+                playersData: playersData,
+                curPlayerIndex : data.curPlayerIndex
+            };
+
+            const contestantString = JSON.stringify(contestandData);
+            window.unityInstance.SendMessage('WebGLBridge', 'SetPlayersInfoOnSelectTrue', contestantString);
+
+            const questionData = {
+                title: data.text,
+                statements: data.options
+            };
+
+            const questionString = JSON.stringify(questionData);
+            window.unityInstance.SendMessage('WebGLBridge', 'ShowSelectTrueStatements', questionString);
+        };
+
+        // 3. Etap sorusunu gizle
+        window.hideStage3Question = function () {
+            
+            window.unityInstance.SendMessage('WebGLBridge', 'HideSelectTrue');
+        };
+
+        // 3. Etap şık seçimi
+        window.selectStage3Option = function (optionIndex) {
+            window.unityInstance.SendMessage('WebGLBridge', 'LockSelectTrueStatement', optionIndex.toString());
+        };
+
+        // 3. Etap sonuç gösterme (eski fonksiyon güncellendi)
+        window.showStage3Result = function (data) {
+            
+            const questionString = JSON.stringify(data);
+            window.unityInstance.SendMessage('WebGLBridge', 'ShowSelectTrueResult', questionString);
+        };
+
+        // Player timeout function for stage 3
+        window.PlayerTimeOut = function (data) {
+            console.log("Player timeout triggered from Unity");
+            // Send message to reji panel to handle player timeout
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage({
+                    action: 'stage3PlayerTimeOut',
+                    playerIndex: data
+                }, '*');
+            }
+        };
+
+        window.showLogo = function () {
+            console.log('[WEB] showLogo :');
+            window.unityInstance.SendMessage('WebGLBridge', 'ShowLogo');
+        };
+
+
+        // Reji'den gelen postMessage'ı dinle
+        window.addEventListener('message', function (event) {
+            console.log('[WEB] message : ', event.data.action);
+            console.log('[WEB] message Data : ', event.data);
+
+            var action = event.data.action;
+
+            if (!event.data)
+                return;
+
+            //----- Unity Methods -----
+            if (action === 'showStageTransition') {
+                window.showStageTransition(event.data.data.stage);
+            }
+            if (action === 'showLogo') {
+                window.showLogo();
+            }
+            if (action === 'showEliminateStage') {
+                window.showEliminateStage();
+            }
+            else if (action === 'showUnityWheel') {
+                window.showUnityWheel(event.data.data.wheelType, event.data.data.delay);
+            } else if (action === 'hideUnityWheel') {
+                window.hideUnityWheel();
+            } else if (action === 'spinUnityWheel') {
+                window.spinUnityWheel(event.data.data.result, event.data.data.stage);
+            } else if (action === 'hideWheel') {
+                window.hideHtmlWheel();
+            }
+
+            else if (action === 'showQuestion') {
+                window.showQuestion(event.data.data);
+            } else if (action === 'hideQuestion') {
+                window.hideQuestion();
+            } else if (action === 'selectOption') {
+                window.selectQuestionOption(event.data.data.option);
+            } else if (action === 'showResult') {
+                window.showQuestionResult(event.data.data);
+            } else if (action === 'lockAnswerAt') {
+                window.lockAnswerAt(event.data.data);
+            }
+
+            else if (action === 'showScoreboard') {
+                window.showScoreboard(event.data.data.contestants, event.data.data.stage);
+            } else if (action === 'hideScoreboard') {
+                window.hideScoreboard();
+            } else if (action === 'eliminate') {
+                window.animateElimination();
+            }
+
+            else if (action === 'showStage2Question') {
+                window.showStage2Question(event.data.data);
+            } else if (action === 'hideStage2Question') {
+                window.hideStage2Question();
+            } else if (action === 'setStage2OptionState') {
+                window.setStage2OptionState(event.data.data);
+            } else if (action === 'showStage2Result') {
+                window.showStage2Result(event.data.data.results);
+            }
+
+            else if (action === 'showStage3Question') {
+                window.showStage3Question(event.data.data);
+            } else if (action === 'hideStage3Question') {
+                window.hideStage3Question();
+            } else if (action === 'selectStage3Option') {
+                window.selectStage3Option(event.data.data.optionIndex);
+            } else if (action === 'showStage3Result') {
+                window.showStage3Result(event.data.data);
+            } 
+            
+            else if (action === 'updateStage3UpdatePlayerScore') {
+                window.updateStage3UpdatePlayerScore(event.data.data);
+            }
+
+            else if (action === 'waiting') {
+                // Waiting screen - stage containers removed
+                console.log('[WEB] Waiting screen called - stage containers removed');
+            }
+        });
+
+        // Wall ekranı açıldığında reji'ye kendini tanıtır
+        try {
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage({ type: 'registerWall' }, '*');
+            }
+        } catch (e) { }
+
+        // Unity yükleme ve entegrasyon
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('[WEB] Wall ekranı yüklendi - Unity aktif');
+
+            // Unity loader script'ini yükle
+            var script = document.createElement("script");
+            script.src = "/Build/TimeTunnel.loader.js";
+            script.onload = function () {
+                createUnityInstance(document.querySelector("#unity-canvas"), {
+                    dataUrl: "/Build/TimeTunnel.data",
+                    frameworkUrl: "/Build/TimeTunnel.framework.js",
+                    codeUrl: "/Build/TimeTunnel.wasm",
+                    streamingAssetsUrl: "StreamingAssets",
+                    companyName: "DefaultCompany",
+                    productName: "TimeTunnel",
+                    productVersion: "1.0",
+                }).then((unityInstance) => {
+                    window.unityInstance = unityInstance;
+                    window.unityReady = true;
+
+                    console.log(`[WEB] window.parent ${window.parent} `);
+                    // Unity hazır olduğunu reji'ye bildir
+                    if (window.parent) {
+                        console.log('[WEB] Unity Ready mesajı gönderiliyor...');
+                        window.opener.postMessage({ type: 'unityReady' }, '*');
+                    }
+
+                    console.log('[WEB] Unity başarıyla yüklendi!');
+
+                    // Unity progress bar'ı gizle
+                    document.querySelector("#unity-loading-bar").style.display = "none";
+
+                }).catch((message) => {
+                    console.error('[WEB] Unity yükleme hatası:', message);
+
+                    // Hata durumunda HTML wheel'i fallback olarak kullan
+                    window.spinUnityWheel = function () {
+                        console.log('[WEB] Unity çark hatası - HTML çark kullanılıyor');
+                    };
+                });
+            };
+
+            script.onerror = function () {
+                console.error('[WEB] Unity loader script yüklenemedi - HTML wheel fallback');
+
+                // Script yüklenemezse HTML wheel'i fallback olarak kullan
+                window.spinUnityWheel = function () {
+                    console.log('[WEB] Unity loader hatası - HTML çark kullanılıyor');
+                };
+            };
+
+            document.head.appendChild(script);
+        });
+    </script>
+
+</body>
+
+</html>

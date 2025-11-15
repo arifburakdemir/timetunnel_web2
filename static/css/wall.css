@@ -1,0 +1,334 @@
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: #000;
+    overflow: hidden;
+}
+
+/* Unity Container Styling */
+#unity-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 20;
+    background: #000;
+}
+
+#unity-container.visible {
+    display: block;
+}
+
+#unity-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+}
+
+/* Unity Loading Bar Styling */
+#unity-loading-bar {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 21;
+}
+
+.stage-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    display: hidden;
+    width: 260px;
+    height: 260px;
+    transition: left 0.7s cubic-bezier(.7, 1.7, .5, 1), width 0.7s cubic-bezier(.7, 1.7, .5, 1);
+}
+
+.stage-container.animated {
+    left: calc(60% - 170px);
+    width: 570px;
+}
+
+.logo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 260px;
+    object-fit: contain;
+    z-index: 2;
+    filter: drop-shadow(0 0 16px #000a);
+    transition: transform 0.5s cubic-bezier(.7, 1.7, .5, 1);
+}
+
+.logo.logo-move {
+    transform: translateX(50px);
+}
+
+.bars {
+    position: absolute;
+    left: 260px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.stage-container.animated .bars {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s 0.1s;
+}
+
+.bar {
+    height: 48px;
+    background: linear-gradient(90deg, #b98a5a 80%, #e0b97a 100%);
+    display: flex;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 4px 16px #0006;
+    padding-left: 60px;
+    font-size: 2.2rem;
+    font-family: 'Montserrat', 'Arial Black', Arial, sans-serif;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px #000a, 0 0 2px #fff8;
+    color: #fff;
+    user-select: none;
+    clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
+    width: 0;
+    opacity: 0;
+    transition: width 0.7s cubic-bezier(.7, 1.7, .5, 1), opacity 0.3s, clip-path 0.7s cubic-bezier(.7, 1.7, .5, 1);
+    z-index: 1;
+}
+
+.bar.top {
+    max-width: 260px;
+    padding-right: 24px;
+}
+
+.bar:not(.top) {
+    max-width: 310px;
+    padding-right: 48px;
+}
+
+.bar-text {
+    width: 100%;
+    text-align: left;
+    padding-left: 20px;
+}
+
+.bar.bar-visible {
+    opacity: 1;
+    width: 260px;
+    clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
+}
+
+.bar.top.bar-visible {
+    width: 260px;
+}
+
+.bar:not(.top).bar-visible {
+    width: 310px;
+}
+
+.bar.bar-wipe {
+    /* Sağdan sola wipe efekti */
+    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    animation: barWipe 0.7s cubic-bezier(.7, 1.7, .5, 1) forwards;
+}
+
+@keyframes barWipe {
+    0% {
+        clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    }
+
+    100% {
+        clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
+    }
+}
+
+/* Animasyonlar */
+@keyframes correctPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes wrongShake {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10% {
+        transform: translateX(-3px);
+    }
+
+    30% {
+        transform: translateX(3px);
+    }
+
+    60% {
+        transform: translateX(-2px);
+    }
+
+    90% {
+        transform: translateX(1px);
+    }
+}
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    /* Daha az scale */
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+@keyframes defBoxChange {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 3. Etap şık outline animasyonları - option box için */
+@keyframes correctPulse {
+    0% {
+        transform: scale(1);
+        border-color: #27ae60;
+        box-shadow: 0 0 20px rgba(39, 174, 96, 0.6);
+        border-radius: 0px 0px 40px 40px;
+    }
+
+    50% {
+        transform: scale(1.02);
+        border-color: #2ecc71;
+        box-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
+        border-radius: 0px 0px 40px 40px;
+    }
+
+    100% {
+        transform: scale(1);
+        border-color: #27ae60;
+        box-shadow: 0 0 20px rgba(39, 174, 96, 0.6);
+        border-radius: 0px 0px 40px 40px;
+    }
+}
+
+@keyframes wrongShake {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateX(0);
+        border-color: #e74c3c;
+        border-radius: 0px 0px 40px 40px;
+    }
+
+    10% {
+        transform: translateX(-4px);
+        border-color: #c0392b;
+        border-radius: 0px 0px 40px 40px;
+    }
+
+    30% {
+        transform: translateX(4px);
+        border-color: #c0392b;
+        border-radius: 0px 0px 40px 40px;
+    }
+
+    60% {
+        transform: translateX(-2px);
+        border-color: #e74c3c;
+        border-radius: 0px 0px 40px 40px;
+    }
+
+    90% {
+        transform: translateX(2px);
+        border-color: #e74c3c;
+        border-radius: 0px 0px 40px 40px;
+    }
+}
+
+/* Sıra göstergesi kaldırıldı */
+
+/* Animasyonlar */
+@keyframes scoreboardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contestant-item {
+    animation: scoreboardSlideIn 0.8s ease-out;
+}
+
+.contestant-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.contestant-item:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.contestant-item:nth-child(3) {
+    animation-delay: 0.5s;
+}
+
+.contestant-item:nth-child(4) {
+    animation-delay: 0.7s;
+}

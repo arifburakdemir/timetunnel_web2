@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaman Tüneli Reji Paneli</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reji.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>Zaman Tüneli Reji Paneli</h1>
+        <div class="current-stage">Etap: <span id="current-stage">Başlamadı</span></div>
+    </div>
+
+    <div class="main-container">
+        <!-- Yarışmacı Yönetimi ve Listesi Bölümü -->
+        <div class="contestants-column">
+            <!-- Yarışmacı Yönetim Paneli -->
+            <div class="panel contestants-management-panel">
+                <h2>Yarışmacı Yönetimi</h2>
+                
+                <!-- Yarışmacı Ekleme Formu -->
+                <div class="add-contestant-section">
+                    <h3>Yarışmacı Ekle</h3>
+                    <div class="add-contestant-form">
+                        <input type="text" id="contestant-name" placeholder="Yarışmacı adı girin">
+                        
+                        <!-- Fotoğraf Yükleme Alanı -->
+                        <div class="photo-upload-section">
+                            <label for="contestant-photo" class="photo-upload-label">
+                                <span class="photo-upload-text">Fotoğraf Seç (Opsiyonel)</span>
+                                <input type="file" id="contestant-photo" accept="image/*" class="photo-upload-input">
+                            </label>
+                            <div class="photo-preview" id="photo-preview" style="display: none;">
+                                <img id="preview-image" src="" alt="Önizleme">
+                                <button type="button" class="remove-photo-btn" onclick="rejiController.removePhoto()">Kaldır</button>
+                            </div>
+                        </div>
+                        
+                        <button onclick="addContestant()" class="add-btn">Yarışmacı Ekle</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Yarışmacı Listesi Paneli -->
+            <div class="panel contestants-list-panel">
+                <h2>Yarışmacı Listesi</h2>
+                
+                <!-- Puan Miktarı Ayarı -->
+                <div class="point-settings">
+                    <label for="point-amount">Puan Miktarı:</label>
+                    <input type="number" id="point-amount" value="10" max="100">
+                    <span>puan</span>
+                </div>
+
+                <!-- Yarışmacı Listesi -->
+                <div class="contestants-management-list" id="contestants-management-list">
+                    <!-- Dinamik olarak doldurulacak -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Oyun Kontrol Paneli -->
+        <div class="panel game-panel">
+            <h2>Oyun Kontrolü</h2>
+            
+            <!-- Ekran Kontrolü -->
+            <div class="screen-controls">
+                <button id="open-wall-btn" class="wall-btn full-width">Wall Ekranını Aç</button>
+                
+                <!-- Puan Durumu Kontrolü -->
+                <div class="scoreboard-controls">
+                    <button onclick="showScoreboard()" class="scoreboard-btn">Puan Durumunu Göster</button>
+                    <button onclick="hideScoreboard()" class="hide-scoreboard-btn">Puan Durumunu Gizle</button>
+                </div>
+            </div>
+            
+            <!-- Etap Kontrolü -->
+            <div class="stage-controls">
+                <button onclick="showLogo()" class="stage-btn">Logoyu Göster</button>
+                <button onclick="startStage(1)" class="stage-btn">1. Etap</button>
+                <button onclick="startStage(2)" class="stage-btn">2. Etap</button>
+                <button onclick="startStage(3)" class="stage-btn">3. Etap</button>
+                <button onclick="startEleminateStage()" class="stage-btn">Eleme Turu</button>
+            </div>
+            
+            <!-- O Anki Etap Göstergesi -->
+            <div class="current-stage-display">
+                <span id="active-stage-display">Etap başlatılmadı</span>
+            </div>
+            
+            <!-- Çark Kontrolleri -->
+            <div class="wheel-controls">
+                <h3>Çark</h3>
+                <div class="wheel-action-buttons">
+                    <button onclick="bringActiveStageWheel()" class="wheel-action-btn bring-wheel-btn">Çarkı Getir</button>
+                    <button onclick="spinWheel()" class="wheel-action-btn spin-wheel-btn" id="spin-wheel-btn" disabled>Çarkı Çevir</button>
+                </div>
+                <div class="wheel-result" id="wheel-result">Sonuç: -</div>
+                <button onclick="loadQuestionForDate()" class="get-question-btn" id="get-question-btn" style="display: none;">Soruyu Getir</button>
+            </div>
+
+            <!-- Soru Kontrolü -->
+            <div class="question-controls" id="question-controls" style="display: none;">
+                <h3>Soru</h3>
+                <div class="question-header">
+                    <div class="question-info" id="question-info">Soru #0 - 0 puan</div>
+                </div>
+                
+                <div class="current-question" id="current-question">Henüz soru yok</div>
+                
+                <!-- 1. Etap Şıkları (4 seçenek) -->
+                <div class="question-options stage1-options" id="question-options" style="display: none;">
+                    <!-- Şıklar buraya gelecek -->
+                </div>
+
+                <!-- 2. Etap Doğru/Yanlış Seçenekleri (6 madde) -->
+                <div class="stage2-options" id="stage2-options" style="display: none;">
+                    <div class="stage2-item" data-option="0">
+                        <span class="option-label">A)</span>
+                        <span class="option-text" id="option-text-0">Seçenek A</span>
+                        <div class="true-false-controls">
+                            <button class="tf-btn true-btn" onclick="selectTrueFalse(0, true)">Doğru</button>
+                            <button class="tf-btn false-btn" onclick="selectTrueFalse(0, false)">Yanlış</button>
+                            <div class="tf-indicator" id="tf-indicator-0"></div>
+                        </div>
+                    </div>
+                    <div class="stage2-item" data-option="1">
+                        <span class="option-label">B)</span>
+                        <span class="option-text" id="option-text-1">Seçenek B</span>
+                        <div class="true-false-controls">
+                            <button class="tf-btn true-btn" onclick="selectTrueFalse(1, true)">Doğru</button>
+                            <button class="tf-btn false-btn" onclick="selectTrueFalse(1, false)">Yanlış</button>
+                            <div class="tf-indicator" id="tf-indicator-1"></div>
+                        </div>
+                    </div>
+                    <div class="stage2-item" data-option="2">
+                        <span class="option-label">C)</span>
+                        <span class="option-text" id="option-text-2">Seçenek C</span>
+                        <div class="true-false-controls">
+                            <button class="tf-btn true-btn" onclick="selectTrueFalse(2, true)">Doğru</button>
+                            <button class="tf-btn false-btn" onclick="selectTrueFalse(2, false)">Yanlış</button>
+                            <div class="tf-indicator" id="tf-indicator-2"></div>
+                        </div>
+                    </div>
+                    <div class="stage2-item" data-option="3">
+                        <span class="option-label">D)</span>
+                        <span class="option-text" id="option-text-3">Seçenek D</span>
+                        <div class="true-false-controls">
+                            <button class="tf-btn true-btn" onclick="selectTrueFalse(3, true)">Doğru</button>
+                            <button class="tf-btn false-btn" onclick="selectTrueFalse(3, false)">Yanlış</button>
+                            <div class="tf-indicator" id="tf-indicator-3"></div>
+                        </div>
+                    </div>
+                    <div class="stage2-item" data-option="4">
+                        <span class="option-label">E)</span>
+                        <span class="option-text" id="option-text-4">Seçenek E</span>
+                        <div class="true-false-controls">
+                            <button class="tf-btn true-btn" onclick="selectTrueFalse(4, true)">Doğru</button>
+                            <button class="tf-btn false-btn" onclick="selectTrueFalse(4, false)">Yanlış</button>
+                            <div class="tf-indicator" id="tf-indicator-4"></div>
+                        </div>
+                    </div>
+                    <div class="stage2-item" data-option="5">
+                        <span class="option-label">F)</span>
+                        <span class="option-text" id="option-text-5">Seçenek F</span>
+                        <div class="true-false-controls">
+                            <button class="tf-btn true-btn" onclick="selectTrueFalse(5, true)">Doğru</button>
+                            <button class="tf-btn false-btn" onclick="selectTrueFalse(5, false)">Yanlış</button>
+                            <div class="tf-indicator" id="tf-indicator-5"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Etap Şıkları (7 madde - A'dan G'ye) -->
+                <div class="stage3-options" id="stage3-options" style="display: none;">
+                    <!-- Finalist Seçici -->
+
+                    <div class="stage3-item" data-option="0" onclick="selectStage3PlayerOption(0)">
+                        <span class="option-label">A)</span>
+                        <span class="option-text" id="stage3-option-text-0">Seçenek A</span>
+                    </div>
+                    <div class="stage3-item" data-option="1" onclick="selectStage3PlayerOption(1)">
+                        <span class="option-label">B)</span>
+                        <span class="option-text" id="stage3-option-text-1">Seçenek B</span>
+                    </div>
+                    <div class="stage3-item" data-option="2" onclick="selectStage3PlayerOption(2)">
+                        <span class="option-label">C)</span>
+                        <span class="option-text" id="stage3-option-text-2">Seçenek C</span>
+                    </div>
+                    <div class="stage3-item" data-option="3" onclick="selectStage3PlayerOption(3)">
+                        <span class="option-label">D)</span>
+                        <span class="option-text" id="stage3-option-text-3">Seçenek D</span>
+                    </div>
+                    <div class="stage3-item" data-option="4" onclick="selectStage3PlayerOption(4)">
+                        <span class="option-label">E)</span>
+                        <span class="option-text" id="stage3-option-text-4">Seçenek E</span>
+                    </div>
+                    <div class="stage3-item" data-option="5" onclick="selectStage3PlayerOption(5)">
+                        <span class="option-label">F)</span>
+                        <span class="option-text" id="stage3-option-text-5">Seçenek F</span>
+                    </div>
+                    <div class="stage3-item" data-option="6" onclick="selectStage3PlayerOption(6)">
+                        <span class="option-label">G)</span>
+                        <span class="option-text" id="stage3-option-text-6">Seçenek G</span>
+                    </div>
+                </div>
+
+                <div class="question-actions">
+                    <button onclick="lockAnswerAt()" class="lock-btn" style="display: none;">Soruyu Kitle</button>
+                    <button onclick="showResult()" class="result-btn">Sonucu Göster</button>
+                    <button onclick="nextQuestion()" class="next-btn">Soruyu Gizle</button>
+                </div>
+
+
+
+
+                <div class="question-hint" id="question-hint" style="display: none;">
+                    <strong>İpucu:</strong> <span id="hint-text"></span>
+                </div>
+            </div>
+
+
+            <!-- Sistem İşlemleri -->
+            <div class="system-controls">
+                <h3>Sistem</h3>
+                <!-- Export butonu kaldırıldı -->
+                <button onclick="resetGame()" class="reset-btn">Oyunu Sıfırla</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="{{ url_for('static', filename='js/app.entry.js') }}"></script>
+</body>
+</html> 

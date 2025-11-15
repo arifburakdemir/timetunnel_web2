@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "tarih": "29-10",
+    "soru_metni": "29-Ekim tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Atatürk Samsun'a çıktı", "dogru_mu": "Y" },
+      { "metin": "Ay'a ilk insan ayak bastı", "dogru_mu": "Y" },
+      { "metin": "Cumhuriyet Bayramı kutlanır", "dogru_mu": "D" },
+      { "metin": "Türkiye Cumhuriyeti ilan edildi", "dogru_mu": "D" },
+      { "metin": "TBMM açıldı", "dogru_mu": "Y" },
+      { "metin": "Lozan Antlaşması imzalandı", "dogru_mu": "Y" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "Cumhuriyet Bayramı olarak kutlanır."
+  },
+  {
+    "id": 2,
+    "tarih": "15-03",
+    "soru_metni": "15-Mart tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Jül Sezar suikast sonucu öldürüldü", "dogru_mu": "D" },
+      { "metin": "Rus Çarı II. Nikolay tahttan feragat etti", "dogru_mu": "D" },
+      { "metin": "Almanya Polonya’yı işgal etti", "dogru_mu": "Y" },
+      { "metin": "Suriye’de iç savaşa yol açan protestolar başladı", "dogru_mu": "D" },
+      { "metin": "Nelson Mandela hapishaneden serbest bırakıldı", "dogru_mu": "Y" },
+      { "metin": "ABD’de Büyük Buhran başladı", "dogru_mu": "Y" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "‘Et tu, Brute?’ sözüyle anılan suikast bu günde gerçekleşti."
+  },
+  {
+    "id": 3,
+    "tarih": "10-12",
+    "soru_metni": "10-Aralık tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "İnsan Hakları Evrensel Bildirgesi kabul edildi", "dogru_mu": "D" },
+      { "metin": "İlk Nobel Ödülleri verildi", "dogru_mu": "D" },
+      { "metin": "Türkiye’de ilk nüfus sayımı yapıldı", "dogru_mu": "Y" },
+      { "metin": "Uruguay’da askerî rejim sona erdi", "dogru_mu": "D" },
+      { "metin": "Türkiye AB üyelik müzakerelerine başladı", "dogru_mu": "Y" },
+      { "metin": "Mississippi eyaleti ABD’ye katıldı", "dogru_mu": "D" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "BM’nin İnsan Hakları Günü olarak her yıl kutlanır."
+  },
+  {
+    "id": 4,
+    "tarih": "06-08",
+    "soru_metni": "06-Ağustos tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Hiroşima’ya atom bombası atıldı", "dogru_mu": "D" },
+      { "metin": "İlk web sitesi yayınlandı", "dogru_mu": "D" },
+      { "metin": "Dünyada ilk elektrikli sandalye idamı gerçekleşti", "dogru_mu": "D" },
+      { "metin": "ABD’de kadınlar seçme hakkını kazandı", "dogru_mu": "Y" },
+      { "metin": "NASA’nın Curiosity aracı Mars’a indi", "dogru_mu": "D" },
+      { "metin": "I. Dünya Savaşı başladı", "dogru_mu": "Y" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "Nükleer silahın ilk kez savaşta kullanıldığı gündür."
+  },
+  {
+    "id": 5,
+    "tarih": "09-11",
+    "soru_metni": "09-Kasım tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Berlin Duvarı yıkılmaya başladı", "dogru_mu": "D" },
+      { "metin": "Kristallnacht (Camlar Gecesi) gerçekleşti", "dogru_mu": "D" },
+      { "metin": "Alman İmparatoru II. Wilhelm tahttan feragat etti", "dogru_mu": "D" },
+      { "metin": "Taliban Kabil’i terk etti", "dogru_mu": "D" },
+      { "metin": "Türkiye’de ilk özel televizyon kuruldu", "dogru_mu": "Y" },
+      { "metin": "Kamboçya Fransa’dan bağımsızlığını ilan etti", "dogru_mu": "D" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "Almanya’nın birleşmesine kapı aralayan tarihtir."
+  },
+  {
+    "id": 6,
+    "tarih": "12-04",
+    "soru_metni": "12-Nisan tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Yuri Gagarin uzaya çıkan ilk insan oldu", "dogru_mu": "D" },
+      { "metin": "NASA’nın ilk uzay mekik uçuşu gerçekleşti", "dogru_mu": "D" },
+      { "metin": "Amerikan İç Savaşı başladı", "dogru_mu": "D" },
+      { "metin": "ABD Başkanı Franklin D. Roosevelt vefat etti", "dogru_mu": "D" },
+      { "metin": "Laiklik ilkesi Türkiye Anayasası’na girdi", "dogru_mu": "Y" },
+      { "metin": "İlk iPad piyasaya sürüldü", "dogru_mu": "Y" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "Dünya Uzay Günü olarak da anılır."
+  },
+  {
+    "id": 7,
+    "tarih": "25-12",
+    "soru_metni": "25-Aralık tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Sovyetler Birliği resmen dağıldı", "dogru_mu": "D" },
+      { "metin": "Charlemagne Kutsal Roma İmparatoru ilan edildi", "dogru_mu": "D" },
+      { "metin": "Rusya’da Bolşevik Devrimi gerçekleşti", "dogru_mu": "Y" },
+      { "metin": "William the Conqueror İngiltere Kralı oldu", "dogru_mu": "D" },
+      { "metin": "SSCB Afganistan’a asker gönderdi", "dogru_mu": "Y" },
+      { "metin": "Euro nakit olarak dolaşıma girdi", "dogru_mu": "Y" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "Sovyetler Birliği’nin son günü olarak bilinir."
+  },
+  {
+    "id": 8,
+    "tarih": "30-10",
+    "soru_metni": "30-Ekim tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Mussolini İtalya’da iktidara geldi", "dogru_mu": "D" },
+      { "metin": "‘Marslılar Saldırıyor!’ radyo yayını panik yarattı", "dogru_mu": "D" },
+      { "metin": "İtalyan başbakanı Aldo Moro kaçırıldı", "dogru_mu": "Y" },
+      { "metin": "SSCB Tsar Bomba’yı patlattı", "dogru_mu": "D" },
+      { "metin": "Churchill ‘Kan, emek, gözyaşı ve ter’ dedi", "dogru_mu": "Y" },
+      { "metin": "Türkiye’de sigara yasağı yürürlüğe girdi", "dogru_mu": "D" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "Faşizmin İtalya’da yükselişe geçtiği gündür."
+  },
+  {
+    "id": 9,
+    "tarih": "20-07",
+    "soru_metni": "20-Temmuz tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Neil Armstrong Ay’a ayak bastı", "dogru_mu": "D" },
+      { "metin": "Hitler’e suikast girişimi yaşandı", "dogru_mu": "D" },
+      { "metin": "Viking 1 Mars’a indi", "dogru_mu": "D" },
+      { "metin": "Ürdün Kralı Abdullah I suikast sonucu öldürüldü", "dogru_mu": "D" },
+      { "metin": "Londra’da Türkiye Büyükelçiliği’ne bombalı saldırı yapıldı", "dogru_mu": "D" },
+      { "metin": "Atatürk Cumhurbaşkanı seçildi", "dogru_mu": "Y" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "Ay’a inişin gerçekleştiği tarihtir."
+  },
+  {
+    "id": 10,
+    "tarih": "14-02",
+    "soru_metni": "14-Şubat tarihinde yaşanan olayları işaretleyiniz:",
+    "secenekler": [
+      { "metin": "Chicago’da St. Valentine’s Day Katliamı yaşandı", "dogru_mu": "D" },
+      { "metin": "Alexander Graham Bell telefonun patentini aldı", "dogru_mu": "D" },
+      { "metin": "Humeyni, Salman Rushdie’ye fetva çıkardı", "dogru_mu": "D" },
+      { "metin": "İlk dijital bilgisayar ENIAC tanıtıldı", "dogru_mu": "D" },
+      { "metin": "Arizona eyaleti ABD’ye katıldı", "dogru_mu": "D" },
+      { "metin": "Voyager 1 ‘Mavi Nokta’ fotoğrafını çekti", "dogru_mu": "Y" }
+    ],
+    "puan": 10,
+    "etap": 2,
+    "ipucu": "Sevgililer Günü ile bilinir, ancak tarihsel olarak önemli olaylar da yaşanmıştır."
+  }
+]
