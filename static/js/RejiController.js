@@ -6,6 +6,7 @@ import { WheelControl } from './modules/WheelControl.js';
 import { QuestionControl } from './modules/QuestionControl.js';
 import { RightWrongControl } from './modules/RightWrongControl.js';
 import { SelectTrueControl } from './modules/SelectTrueControl.js';
+import { BackgroundControl } from './modules/BackgroundControl.js';
 
 export class RejiController {
     constructor() {
@@ -34,6 +35,7 @@ export class RejiController {
         this.question = new QuestionControl(this);
         this.rightWrong = new RightWrongControl(this);
         this.selectTrue = new SelectTrueControl(this);
+        this.background = new BackgroundControl(this);
 
         // Public API compatibility (proxy methods used by HTML onclicks)
         this.addContestant = () => this.contestant.addContestant();
@@ -114,5 +116,3 @@ export class RejiController {
         this.selectTrue.handleStage3PlayerTimeout();
     }
 }
-
-

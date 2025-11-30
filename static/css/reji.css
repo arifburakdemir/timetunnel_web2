@@ -1347,4 +1347,58 @@ button:active {
         margin: 10px 0;
         display: inline-block;
     }
-} 
+}
+
+/* Arka Plan Ayarları */
+.background-settings {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ecf0f1;
+}
+
+.background-settings h3 {
+    color: #8e44ad;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.background-controls {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.background-controls label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    cursor: pointer;
+}
+
+#background-color-picker {
+    width: 50px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.update-bg-btn {
+    background: #9b59b6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.update-bg-btn:hover {
+    background: #8e44ad;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(155, 89, 182, 0.3);
+}

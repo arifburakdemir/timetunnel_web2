@@ -413,7 +413,7 @@
                     playerName: contestant.name,
                     playerScore: contestant.score,
                     playerIcon: contestant.photo || "",
-                    countDown: 5
+                    countDown: 25
                 }));
 
             const contestandData = {
@@ -451,6 +451,12 @@
             window.unityInstance.SendMessage('WebGLBridge', 'ShowSelectTrueResult', questionString);
         };
 
+        window.setColor = function (data) {
+            const colorData = JSON.stringify(data);
+            window.unityInstance.SendMessage('WebGLBridge', 'SetColor', colorData);
+        };
+        
+
         // Player timeout function for stage 3
         window.PlayerTimeOut = function (data) {
             console.log("Player timeout triggered from Unity");
@@ -482,6 +488,9 @@
             //----- Unity Methods -----
             if (action === 'showStageTransition') {
                 window.showStageTransition(event.data.data.stage);
+            }
+            if (action === 'setColor') {
+                window.setColor(event.data.data);
             }
             if (action === 'showLogo') {
                 window.showLogo();

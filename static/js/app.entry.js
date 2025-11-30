@@ -48,6 +48,16 @@ window.selectStage3PlayerOption = function (optionIndex) {
     rejiController.selectStage3PlayerOption(optionIndex);
 };
 
+// Background control functions
+window.toggleBackgroundColorPicker = function() {
+    // This function is now handled by the BackgroundControl module
+    // We keep it for backward compatibility with HTML onclick attributes
+};
+
+window.updateBackgroundColor = function() {
+    // This function is now handled by the BackgroundControl module
+    // We keep it for backward compatibility with HTML onclick attributes
+};
 
 window.checkUnityStatus = function () {
     if (rejiController) {
